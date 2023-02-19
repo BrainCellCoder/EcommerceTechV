@@ -113,7 +113,7 @@ app.get("/product/:id", async(req,res)=>{
 })
 
 //Create Product by Admin
-app.post("/product/new",isLoggedIn, isAdmin, async (req,res)=>{
+app.post("/admin/product/new",isLoggedIn, isAdmin, async (req,res)=>{
     try{
         req.body.createdBy = req.session.user._id;
         const product = await Product.create(req.body);
@@ -135,7 +135,7 @@ app.post("/product/new",isLoggedIn, isAdmin, async (req,res)=>{
 });
 
 //update product by admin
-app.put("/product/:id", isLoggedIn, isAdmin, async (req,res)=>{
+app.put("/admin/product/:id", isLoggedIn, isAdmin, async (req,res)=>{
     const {id} = req.params;
     const product = await Product.findByIdAndUpdate(id, req.body);
     if(!product) {
@@ -150,7 +150,7 @@ app.put("/product/:id", isLoggedIn, isAdmin, async (req,res)=>{
 });
 
 //detete product by admin
-app.delete("/product/:id", isLoggedIn, isAdmin, async(req,res)=>{
+app.delete("/admin/product/:id", isLoggedIn, isAdmin, async(req,res)=>{
     try{
         await Product.findByIdAndDelete(req.params.id);
         res.status(200).json({
