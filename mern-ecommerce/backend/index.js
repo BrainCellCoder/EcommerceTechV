@@ -234,7 +234,98 @@ app.post('/logout', (req, res) => {
     } else {
       res.end()
     }
-  })
+  });
+
+// get user details by user
+app.get("/me", isLoggedIn, async(req,res)=>{
+    try{
+        const user = await User.findById(req.session.user._id);
+        res.status(200).json({
+            message: "User details",
+            user
+        })
+    }catch(err){
+        res.status(400).json({
+            message: "Fetching user details failed",
+            error: err
+        })
+    }
+});
+
+// update user details by user
+app.put("/me/update", isLoggedIn, async(req,res)=>{
+    try {
+        const user = await User.findByIdAndUpdate(req.session.user._id, req.body,{
+            new:true,
+            runValidators:true,
+            useFindAndModify: false
+        })
+        res.status(200).json({
+            message: "Updated user details",
+            user
+        })
+    } catch (error) {
+        res.status(400).json({
+            message: "Updation failed"
+        })
+    }
+});
+
+// get all users details by admin
+app.get("/admin/users", isLoggedIn, isAdmin, async(req,res)=>{
+    try {
+        const users = await User.find({});
+        res.status(200).json({
+            message: "All users",
+            numberOfUSers: users.length,
+            users
+        });
+    } catch (error) {
+        res.status(400).json({
+            messsage: "Error",
+            error: err
+        })
+    }
+});
+
+// get a user details by admin
+app.get("/admin/user/:id", isLoggedIn, isAdmin, async(req,res)=>{
+    try {
+        const user = await User.findById(req.params.id);
+        if(!user){
+            return res.status(400).json({
+                message: "User not found"
+            })
+        }
+        res.status(200).json({
+            message: "Single user details",
+            user
+        });
+    } catch (error) {
+        res.status(400).json({
+            messsage: "Error",
+            error: err
+        })
+    }
+});
+
+// delete a user by admin
+app.delete("/admin/user/:id", isLoggedIn, isAdmin, async(req,res)=>{{
+    try {
+        const user = await User.findByIdAndDelete(req.params.id);
+        if(!user){
+            return res.status(400).json({
+                message: "User doesn't exists" 
+            })
+        }
+        res.status(200).json({
+            message: "User Deleted"
+        })
+        
+    } catch (error) {
+        
+    }
+}});
 
  
 app.listen(8000, (req,res)=>{
