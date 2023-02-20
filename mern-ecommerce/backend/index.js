@@ -56,8 +56,6 @@ const isAdmin = (req,res,next) =>{
 app.get("/products",async (req,res)=>{
     try{
         const productCount = await Product.countDocuments();
-        console.log(productCount);
-
         const {name, category, price} = req.query;
         const queryObj = {};
         if(name){
@@ -68,16 +66,13 @@ app.get("/products",async (req,res)=>{
         }
         if(price){
             let p = JSON.stringify(price)
-            console.log(p);
             p = p.replace(/\b(gt|gte|lt|lte)\b/g,(key) => `$${key}`)
-            console.log("*****",p);
             queryObj.price = JSON.parse(p)//filter by price
         }
         //pagination
         let page = Number(req.query.page) || 1;
         let limit = Number(req.query.limit) || 3;//result per page
         let skip = (page-1)*limit;
-        console.log(queryObj);
 
         const products = await Product.find(queryObj).skip(skip).limit(limit);
         res.status(200).json({
@@ -86,7 +81,9 @@ app.get("/products",async (req,res)=>{
             totalNumberOfProducts: productCount
         })
     }catch(err){
-        console.log(err);
+         res.status(400).json({
+            error: err.message
+        })
     }
 });
 
@@ -157,7 +154,9 @@ app.delete("/admin/product/:id", isLoggedIn, isAdmin, async(req,res)=>{
             message: "Product deleted"
         })
     }catch(err){
-        console.log(err);
+         res.status(400).json({
+            error: err.message
+        })
     }
 });
 
@@ -202,7 +201,6 @@ app.post("/login", async (req,res)=>{
         }else{
             if(password === user.password){
                 req.session.user = user
-                console.log(req.session.user);
                 res.status(200).json({
                     message: "Logged in successfuy"
                 })
@@ -213,7 +211,10 @@ app.post("/login", async (req,res)=>{
             }
         }
     } catch (err) {
-        console.log(err);
+        res.status(400).json({
+            message: "Error!!",
+            error: err
+        })
     }
 });
 
@@ -323,7 +324,10 @@ app.delete("/admin/user/:id", isLoggedIn, isAdmin, async(req,res)=>{{
         })
         
     } catch (error) {
-        
+        res.status(400).json({
+            message: "Error!!",
+            error: err
+        })
     }
 }});
 
