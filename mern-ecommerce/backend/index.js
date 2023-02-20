@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -5,21 +6,23 @@ mongoose.set("strictQuery", false);
 const Product = require("./models/productModel");
 const User = require("./models/userModel");
 const session = require("express-session");
+const PORT = process.env.PORT || 8000;
+const {isLoggedIn, isAdmin} = require("./middlewares")
 
 //DB connection
-const DB = "mongodb+srv://techv-ecom:techv-ecom@cluster0.h2kbo.mongodb.net/mernEcommerce";
+const DB = process.env.DB_URL;
 mongoose.connect(DB,{
     useNewUrlParser: true,
     useUnifiedTopology:true
 }).then(con => {
-    console.log("DB connected successfuly");
+    console.log("DB connected successfully");
 }).catch(e => {
     console.log(e);
 })
 
 // express-session
-const sessionOptions = {
-    secret: "thisisnotagoodsecret",
+  const sessionOptions = {
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -32,25 +35,6 @@ app.use(session(sessionOptions));
 
 //express body parser
 app.use(express.json());
-
-// isLoggedIn middleware
-const isLoggedIn = (req,res,next) =>{
-    if(!req.session.user){
-        return res.status(400).json({
-            message: "You must be logged in"
-        })
-    }
-    next();
-}
-// isAdmin middleware
-const isAdmin = (req,res,next) =>{
-    if(req.session.user.role !== "admin"){
-        return res.status(400).json({
-            message: "You are not an admin (Access Denied)"
-        })
-    }
-    next();
-}
 
 //get all products
 app.get("/products",async (req,res)=>{
@@ -392,6 +376,6 @@ app.delete("/admin/user/:id", isLoggedIn, isAdmin, async(req,res)=>{{
 }});
 
  
-app.listen(8000, (req,res)=>{
-    console.log("Listening in PORT 8000");
+app.listen(PORT, (req,res)=>{
+    console.log(`Listening in PORT ${PORT}`);
 })
