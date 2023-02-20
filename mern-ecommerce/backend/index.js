@@ -237,6 +237,66 @@ app.post('/logout', (req, res) => {
     }
   });
 
+// add to cart
+app.post("/cart/:id",isLoggedIn, async(req,res)=>{
+    try{
+        const {id} = req.params;
+        const product = await Product.findById(id);
+        if(!product){
+            return res.status(400).json({
+                message: "Product not found"
+            })
+        }
+        const user = await User.findById(req.session.user._id);
+        if(user.cart.includes(product._id)){
+            return res.json({
+                message: "Item is already in cart"
+            })
+        }
+        user.cart.push(product);
+        await user.save();
+        res.status(200).json({
+            message: "Product added to cart",
+            user
+        })
+    }catch(err){
+        res.status(400).json({
+            message: "Error",
+            err
+        })
+    }
+});
+
+// add to wishList
+app.post("/wishlist/:id", isLoggedIn, async(req,res)=>{
+    try{
+        const {id} = req.params;
+        const product = await Product.findById(id);
+        if(!product){
+            return res.status(400).json({
+                message: "Product not found"
+            })
+        }
+        const user = await User.findById(req.session.user._id);
+        if(user.wishList.includes(product._id)){
+            return res.json({
+                message: "Item is already in Wish list"
+            })
+        }
+        user.wishList.push(product);
+        await user.save();
+        res.status(200).json({
+            message: "Product added to Wish List",
+            user
+        })
+    }catch(err){
+        res.status(400).json({
+            message: "Error",
+            err
+        })
+    }
+})
+
 // get user details by user
 app.get("/me", isLoggedIn, async(req,res)=>{
     try{
