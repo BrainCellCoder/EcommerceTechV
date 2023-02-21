@@ -251,6 +251,23 @@ app.post("/cart/:id",isLoggedIn, async(req,res)=>{
     }
 });
 
+// remove from cart
+app.delete("/cart-remove/:id",isLoggedIn, async(req,res) => {
+    try{
+        const productId = req.params.id;
+        const userId = req.session.user._id;
+        await User.findByIdAndUpdate(userId, {$pull: {cart: productId}});
+        return res.json({
+            message: "Successfully removed from cart"
+        })
+    }catch(err){
+        return res.status(400).json({
+            message: "Error",
+            err
+        })
+    }
+});
+
 // add to wishList
 app.post("/wishlist/:id", isLoggedIn, async(req,res)=>{
     try{
@@ -280,6 +297,23 @@ app.post("/wishlist/:id", isLoggedIn, async(req,res)=>{
         })
     }
 })
+
+// remove from wishlist
+app.delete("/wishlist-remove/:id",isLoggedIn, async(req,res) => {
+    try{
+        const productId = req.params.id;
+        const userId = req.session.user._id;
+        await User.findByIdAndUpdate(userId, {$pull: {wishList: productId}});
+        return res.json({
+            message: "Successfully removed from Wish List"
+        })
+    }catch(err){
+        return res.status(400).json({
+            message: "Error",
+            err
+        })
+    }
+});
 
 // get user details by user
 app.get("/me", isLoggedIn, async(req,res)=>{
