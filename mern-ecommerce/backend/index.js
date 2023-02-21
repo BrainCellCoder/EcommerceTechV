@@ -252,10 +252,17 @@ app.post("/cart/:id",isLoggedIn, async(req,res)=>{
 });
 
 // remove from cart
-app.delete("/cart-remove/:id",isLoggedIn, async(req,res) => {
+app.delete("/cart/:id",isLoggedIn, async(req,res) => {
     try{
         const productId = req.params.id;
         const userId = req.session.user._id;
+        const user = await User.findById(userId);
+        const productInCart = user.cart.includes(productId);
+        if(!productInCart){
+            return res.json({
+                message: "This product is not in the cart"
+            })
+        }
         await User.findByIdAndUpdate(userId, {$pull: {cart: productId}});
         return res.json({
             message: "Successfully removed from cart"
@@ -299,10 +306,17 @@ app.post("/wishlist/:id", isLoggedIn, async(req,res)=>{
 })
 
 // remove from wishlist
-app.delete("/wishlist-remove/:id",isLoggedIn, async(req,res) => {
+app.delete("/wishlist/:id",isLoggedIn, async(req,res) => {
     try{
         const productId = req.params.id;
         const userId = req.session.user._id;
+        const user = await User.findById(userId);
+        const productInWishlist = user.wishList.includes(productId);
+        if(!productInWishlist){
+            return res.json({
+                message: "This product is not in the Wish List"
+            })
+        }
         await User.findByIdAndUpdate(userId, {$pull: {wishList: productId}});
         return res.json({
             message: "Successfully removed from Wish List"
