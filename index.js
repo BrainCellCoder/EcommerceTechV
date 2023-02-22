@@ -147,9 +147,9 @@ app.delete("/admin/product/:id", isLoggedIn, isAdmin, async(req,res)=>{
 //User register
 app.post("/register", async (req,res)=>{
     try{
-        const {name, email, password, role} = req.body;
+        const {name, email, password} = req.body;
         const user = await User.create({
-            name, email, password, role,
+            name, email, password,
             avtaar:{
                 public_id: "this is a sample id",
                 url: "profileURL"
@@ -158,7 +158,6 @@ app.post("/register", async (req,res)=>{
         req.session.user = user;
         res.status(200).json({
             message: "User registered successfuly",
-            user
         })
     }catch(err){
         res.status(400).json({
@@ -231,7 +230,7 @@ app.post("/cart/:id",isLoggedIn, async(req,res)=>{
                 message: "Product not found"
             })
         }
-        const user = await User.findById(req.session.user._id);
+        const user = await User.findById(req.session.user._id).select("-password");
         if(user.cart.includes(product._id)){
             return res.json({
                 message: "Item is already in cart"
@@ -285,7 +284,7 @@ app.post("/wishlist/:id", isLoggedIn, async(req,res)=>{
                 message: "Product not found"
             })
         }
-        const user = await User.findById(req.session.user._id);
+        const user = await User.findById(req.session.user._id).select("-password");
         if(user.wishList.includes(product._id)){
             return res.json({
                 message: "Item is already in Wish list"
@@ -332,7 +331,7 @@ app.delete("/wishlist/:id",isLoggedIn, async(req,res) => {
 // get user details by user
 app.get("/me", isLoggedIn, async(req,res)=>{
     try{
-        const user = await User.findById(req.session.user._id);
+        const user = await User.findById(req.session.user._id).select("-password");
         res.status(200).json({
             message: "User details",
             user
@@ -352,7 +351,7 @@ app.put("/me/update", isLoggedIn, async(req,res)=>{
             new:true,
             runValidators:true,
             useFindAndModify: false
-        })
+        }).select("-password")
         res.status(200).json({
             message: "Updated user details",
             user
@@ -367,7 +366,7 @@ app.put("/me/update", isLoggedIn, async(req,res)=>{
 // get all users details by admin
 app.get("/admin/users", isLoggedIn, isAdmin, async(req,res)=>{
     try {
-        const users = await User.find({});
+        const users = await User.find({}).select("-password");
         res.status(200).json({
             message: "All users",
             numberOfUSers: users.length,
@@ -384,7 +383,7 @@ app.get("/admin/users", isLoggedIn, isAdmin, async(req,res)=>{
 // get a user details by admin
 app.get("/admin/user/:id", isLoggedIn, isAdmin, async(req,res)=>{
     try {
-        const user = await User.findById(req.params.id);
+        const user = await User.findById(req.params.id).select("-password");
         if(!user){
             return res.status(400).json({
                 message: "User not found"
