@@ -7,7 +7,7 @@ const Product = require("./models/productModel");
 const User = require("./models/userModel");
 const session = require("express-session");
 const PORT = process.env.PORT || 8000;
-const {isLoggedIn, isAdmin} = require("./middlewares")
+const {isLoggedIn, isAdmin} = require("./middlewares");
 
 //DB connection
 const DB = process.env.DB_URL;
@@ -20,7 +20,7 @@ mongoose.connect(DB,{
     console.log(e);
 })
 
-// express-session
+express-session
   const sessionOptions = {
     secret: process.env.SESSION_SECRET,
     resave: false,
