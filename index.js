@@ -8,6 +8,7 @@ const User = require("./models/userModel");
 const session = require("express-session");
 const PORT = process.env.PORT || 8000;
 const {isLoggedIn, isAdmin} = require("./middlewares");
+const bcrypt = require("bcrypt");
 
 //DB connection
 const DB = process.env.DB_URL;
@@ -148,8 +149,9 @@ app.delete("/admin/product/:id", isLoggedIn, isAdmin, async(req,res)=>{
 app.post("/register", async (req,res)=>{
     try{
         const {name, email, password} = req.body;
+        const hashPassword = bcrypt.hashSync(password, 10);
         const user = await User.create({
-            name, email, password,
+            name, email, password: hashPassword,
             avtaar:{
                 public_id: "this is a sample id",
                 url: "profileURL"
@@ -162,7 +164,7 @@ app.post("/register", async (req,res)=>{
     }catch(err){
         res.status(400).json({
             message: "Error!!",
-            error: err
+            err
         })
     }
 });
@@ -182,7 +184,8 @@ app.post("/login", async (req,res)=>{
                 message: "User not found. Please register yourself"
             })
         }else{
-            if(password === user.password){
+            const hashPasssword = user.password;
+            if(bcrypt.compareSync(password, hashPasssword)){
                 req.session.user = user
                 res.status(200).json({
                     message: "Logged in successfuy"
