@@ -149,6 +149,11 @@ app.delete("/admin/product/:id", isLoggedIn, isAdmin, async(req,res)=>{
 app.post("/register", async (req,res)=>{
     try{
         const {name, email, password} = req.body;
+        if(!name || !email || !password){
+            return res.status(400).json({
+                message: "Please provide all the credentials"
+            })
+        }
         const hashPassword = bcrypt.hashSync(password, 10);
         const user = await User.create({
             name, email, password: hashPassword,
@@ -164,7 +169,7 @@ app.post("/register", async (req,res)=>{
     }catch(err){
         res.status(400).json({
             message: "Error!!",
-            err
+            err 
         })
     }
 });

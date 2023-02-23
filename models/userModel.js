@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
+const uniqueValidator = require('mongoose-unique-validator');
 
 const userSchema = new mongoose.Schema({
     name:{
@@ -47,5 +48,7 @@ const userSchema = new mongoose.Schema({
         }
     ]
 }, {timestamps: true});
+
+userSchema.plugin(uniqueValidator, { message: '{PATH} already exists. Try different email' });
 
 module.exports = mongoose.model("User", userSchema);
