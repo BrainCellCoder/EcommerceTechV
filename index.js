@@ -5,6 +5,8 @@ const { isLoggedIn, isAdmin } = require("./middlewares");
 const productRouter = require("./routes/productRoutes");
 const adminRouter = require("./routes/adminRoutes");
 const userRouter = require("./routes/userRoutes");
+const orderRouter = require("./routes/orderRoutes");
+
 // express-session
 const sessionOptions = {
   secret: process.env.SESSION_SECRET,
@@ -21,8 +23,9 @@ app.use(express.json());
 
 //Routes------------------------------------------------------------------------
 app.use("/products", productRouter);
-app.use("/admin", isLoggedIn, isAdmin, adminRouter);
+app.use("/admin", adminRouter);
 app.use("/user", userRouter);
+app.use("/", orderRouter);
 
 app.all("*", (req, res) => {
   res.status(404).json({

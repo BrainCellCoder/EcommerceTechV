@@ -1,9 +1,41 @@
 const Product = require("./../models/productModel");
-const User = require("./../models/userModel");
+const Admin = require("./../models/adminModel");
+
+exports.adminLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "Please enter email and password",
+      });
+    }
+    const admin = await Admin.findOne({ email });
+    if (!admin) {
+      return res.status(400).json({
+        message: "Admin not found.",
+      });
+    } else {
+      if (password === admin.password) {
+        req.session.user = admin;
+        res.status(200).json({
+          message: "Admin Logged in successfuy",
+        });
+      } else {
+        res.status(400).json({
+          message: "Incorrect Username/Password",
+        });
+      }
+    }
+  } catch (err) {
+    res.status(400).json({
+      message: "Error!!",
+      error: err,
+    });
+  }
+};
 
 exports.createProduct = async (req, res) => {
   try {
-    console.log("Created BY 1234");
     req.body.createdBy = req.session.user._id;
     const product = await Product.create(req.body);
     if (product) {
