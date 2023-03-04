@@ -1,5 +1,6 @@
 const Product = require("./../models/productModel");
 const Admin = require("./../models/adminModel");
+const User = require("./../models/userModel");
 
 exports.adminLogin = async (req, res) => {
   try {
@@ -101,7 +102,7 @@ exports.allUsers = async (req, res) => {
       numberOfUSers: users.length,
       users,
     });
-  } catch (error) {
+  } catch (err) {
     res.status(400).json({
       messsage: "Error",
       error: err,
