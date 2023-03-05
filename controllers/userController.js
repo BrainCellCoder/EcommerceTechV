@@ -7,6 +7,7 @@ exports.register = async (req, res) => {
     const { name, email, password } = req.body;
     if (!name || !email || !password) {
       return res.status(400).json({
+        success: false,
         message: "Please provide all the credentials",
       });
     }
@@ -22,10 +23,12 @@ exports.register = async (req, res) => {
     });
     req.session.user = user;
     res.status(200).json({
+      success: true,
       message: "User registered successfuly",
     });
   } catch (err) {
     res.status(400).json({
+      success: false,
       message: "Error!!",
       err,
     });
@@ -37,12 +40,14 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
       return res.status(400).json({
+        success: false,
         message: "Please enter email and password",
       });
     }
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({
+        success: false,
         message: "User not found. Please register yourself",
       });
     } else {
@@ -50,16 +55,19 @@ exports.login = async (req, res) => {
       if (bcrypt.compareSync(password, hashPasssword)) {
         req.session.user = user;
         res.status(200).json({
+          success: true,
           message: "Logged in successfuy",
         });
       } else {
         res.status(400).json({
+          success: false,
           message: "Incorrect Username/Password",
         });
       }
     }
   } catch (err) {
     res.status(400).json({
+      success: false,
       message: "Error!!",
       error: err,
     });
