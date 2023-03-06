@@ -3,9 +3,18 @@ const adminController = require("./../controllers/adminController");
 const router = express.Router();
 const { isLoggedIn, isAdmin } = require("./../middlewares");
 
+const multer = require("multer");
+const { storage } = require("./../cloudinary");
+const upload = multer({ storage });
+
 router
   .route("/product/new")
-  .post(isLoggedIn, isAdmin, adminController.createProduct);
+  .post(
+    isLoggedIn,
+    isAdmin,
+    upload.single("image"),
+    adminController.createProduct
+  );
 router
   .route("/product/:id")
   .put(isLoggedIn, isAdmin, adminController.updateProduct)

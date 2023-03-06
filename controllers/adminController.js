@@ -2,6 +2,8 @@ const Product = require("./../models/productModel");
 const Admin = require("./../models/adminModel");
 const User = require("./../models/userModel");
 
+const { cloudinary } = require("./../cloudinary");
+
 exports.adminLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -38,7 +40,11 @@ exports.adminLogin = async (req, res) => {
 exports.createProduct = async (req, res) => {
   try {
     req.body.createdBy = req.session.user._id;
-    const product = await Product.create(req.body);
+    const product = await Product(req.body);
+    const file = req.file;
+    // product.images = files.map((f) => ({ url: f.path, filename: f.filename }));
+    product.image = { url: file.path, filename: file.filename };
+    await product.save();
     if (product) {
       return res.status(200).json({
         message: "Product created",
