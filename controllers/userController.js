@@ -11,7 +11,8 @@ exports.register = async (req, res) => {
         message: "Please provide all the credentials",
       });
     }
-    const hashPassword = bcrypt.hashSync(password, 10);
+    const saltRounds = Number(process.env.SALT_ROUNDS);
+    const hashPassword = bcrypt.hashSync(password, saltRounds);
     const user = await User.create({
       name,
       email,
