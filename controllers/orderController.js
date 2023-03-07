@@ -3,8 +3,8 @@ const User = require("./../models/userModel");
 
 exports.newOrder = async (req, res) => {
   try {
-    const { orderedProducts } = req.body;
-    const userId = req.session.user._id;
+    const { orderedProducts, totalAmount } = req.body;
+    const userId = req.user._id;
     const user = await User.findById(userId);
     if (
       !user.address ||
@@ -23,6 +23,7 @@ exports.newOrder = async (req, res) => {
     const order = await Order.create({
       user: userId,
       orderedProducts,
+      totalAmount,
     });
     await User.findByIdAndUpdate(userId, { $set: { cart: [] } });
 
