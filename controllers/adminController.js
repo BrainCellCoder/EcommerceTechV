@@ -5,41 +5,45 @@ const User = require("./../models/userModel");
 const { cloudinary } = require("./../cloudinary");
 
 exports.adminLogin = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    if (!email || !password) {
-      return res.status(400).json({
-        message: "Please enter email and password",
-      });
-    }
-    const admin = await Admin.findOne({ email });
-    if (!admin) {
-      return res.status(400).json({
-        message: "Admin not found.",
-      });
-    } else {
-      if (password === admin.password) {
-        req.session.user = admin;
-        res.status(200).json({
-          message: "Admin Logged in successfuy",
-        });
-      } else {
-        res.status(400).json({
-          message: "Incorrect Username/Password",
-        });
-      }
-    }
-  } catch (err) {
-    res.status(400).json({
-      message: "Error!!",
-      error: err,
+  // try {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({
+      message: "Please enter email and password",
     });
   }
+  const admin = await Admin.findOne({ email });
+  if (!admin) {
+    return res.status(400).json({
+      message: "Admin not found.",
+    });
+  } else {
+    if (password === admin.password) {
+      // req.session.user = admin;
+      const token = admin.getJWTToken();
+      res.status(200).cookie("token", token).json({
+        success: true,
+        message: "Loggged in!!",
+        admin,
+        token,
+      });
+    } else {
+      res.status(400).json({
+        message: "Incorrect Username/Password",
+      });
+    }
+  }
+  // } catch (err) {
+  //   res.status(400).json({
+  //     message: "Error!!",
+  //     error: err,
+  //   });
+  // }
 };
 
 exports.createProduct = async (req, res) => {
   try {
-    req.body.createdBy = req.session.user._id;
+    req.body.createdBy = req.admin._id;
     const product = await Product(req.body);
     const file = req.file;
     // product.images = files.map((f) => ({ url: f.path, filename: f.filename }));
@@ -89,6 +93,14 @@ exports.updateProduct = async (req, res) => {
 
 exports.deleteProduct = async (req, res) => {
   try {
+    const product = await Product.findById(req.params.id);
+    console.log(product);
+    if (!product) {
+      return res.status(400).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
     await Product.findByIdAndDelete(req.params.id);
     res.status(200).json({
       message: "Product deleted",

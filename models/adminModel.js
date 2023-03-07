@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const uniqueValidator = require("mongoose-unique-validator");
+const jwt = require("jsonwebtoken");
 
 const adminSchema = new mongoose.Schema({
   name: {
@@ -27,5 +28,12 @@ const adminSchema = new mongoose.Schema({
 adminSchema.plugin(uniqueValidator, {
   message: "{PATH} already exists. Try different email",
 });
+
+// JWT Token
+adminSchema.methods.getJWTToken = function () {
+  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRE,
+  });
+};
 
 module.exports = mongoose.model("Admin", adminSchema);

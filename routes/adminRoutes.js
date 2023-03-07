@@ -18,7 +18,7 @@ router
 router
   .route("/product/:id")
   .put(isLoggedIn, isAdmin, adminController.updateProduct)
-  .delete(adminController.deleteProduct);
+  .delete(isLoggedIn, isAdmin, adminController.deleteProduct);
 
 router.route("/users").get(isLoggedIn, isAdmin, adminController.allUsers);
 router
