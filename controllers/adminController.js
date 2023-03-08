@@ -5,40 +5,40 @@ const User = require("./../models/userModel");
 const { cloudinary } = require("./../cloudinary");
 
 exports.adminLogin = async (req, res) => {
-  // try {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(400).json({
-      message: "Please enter email and password",
-    });
-  }
-  const admin = await Admin.findOne({ email });
-  if (!admin) {
-    return res.status(400).json({
-      message: "Admin not found.",
-    });
-  } else {
-    if (password === admin.password) {
-      // req.session.user = admin;
-      const token = admin.getJWTToken();
-      res.status(200).cookie("token", token).json({
-        success: true,
-        message: "Loggged in!!",
-        admin,
-        token,
-      });
-    } else {
-      res.status(400).json({
-        message: "Incorrect Username/Password",
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "Please enter email and password",
       });
     }
+    const admin = await Admin.findOne({ email });
+    if (!admin) {
+      return res.status(400).json({
+        message: "Admin not found.",
+      });
+    } else {
+      if (password === admin.password) {
+        // req.session.user = admin;
+        const token = admin.getJWTToken();
+        res.status(200).cookie("token", token).json({
+          success: true,
+          message: "Loggged in!!",
+          admin,
+          token,
+        });
+      } else {
+        res.status(400).json({
+          message: "Incorrect Username/Password",
+        });
+      }
+    }
+  } catch (err) {
+    res.status(400).json({
+      message: "Error!!",
+      error: err,
+    });
   }
-  // } catch (err) {
-  //   res.status(400).json({
-  //     message: "Error!!",
-  //     error: err,
-  //   });
-  // }
 };
 
 exports.createProduct = async (req, res) => {
@@ -94,7 +94,6 @@ exports.updateProduct = async (req, res) => {
 exports.deleteProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
-    console.log(product);
     if (!product) {
       return res.status(400).json({
         success: false,
