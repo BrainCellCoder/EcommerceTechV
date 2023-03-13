@@ -22,12 +22,10 @@ exports.register = async (req, res) => {
         url: "profileURL",
       },
     });
-    const token = user.getJWTToken();
-    res.status(200).cookie("token", token).json({
+    res.status(200).json({
       success: true,
       message: "Registered Successfully and Loggged in!!",
       user,
-      token,
     });
   } catch (err) {
     res.status(400).json({
@@ -56,12 +54,10 @@ exports.login = async (req, res) => {
     } else {
       const hashPasssword = user.password;
       if (bcrypt.compareSync(password, hashPasssword)) {
-        const token = user.getJWTToken();
-        res.status(200).cookie("token", token).json({
+        res.status(200).json({
           success: true,
           message: "Logged in successfully",
           user,
-          token,
         });
       } else {
         res.status(400).json({
@@ -80,8 +76,6 @@ exports.login = async (req, res) => {
 };
 
 exports.logout = (req, res) => {
-  res.cookie("token", null);
-
   res.status(200).json({
     success: true,
     message: "Logged Out",
