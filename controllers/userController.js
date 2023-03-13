@@ -54,9 +54,11 @@ exports.login = async (req, res) => {
     } else {
       const hashPasssword = user.password;
       if (bcrypt.compareSync(password, hashPasssword)) {
-        res.status(200).json({
+        const token = user.getJWTToken();
+        res.status(200).cookie("token", token).json({
           success: true,
           message: "Logged in successfully",
+          token,
           user,
         });
       } else {
@@ -84,7 +86,8 @@ exports.logout = (req, res) => {
 
 exports.profile = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select("-password");
+    const user = await User.findById(req.userData.id).select("-password");
+    console.log(user);
     res.status(200).json({
       message: "User details",
       user,
@@ -99,7 +102,7 @@ exports.profile = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    const user = await User.findByIdAndUpdate(req.user._id, req.body, {
+    const user = await User.findByIdAndUpdate(req.userData.id, req.body, {
       new: true,
       runValidators: true,
       useFindAndModify: false,
@@ -124,9 +127,10 @@ exports.addToCart = async (req, res) => {
         message: "Product not found",
       });
     }
-    const user = await User.findById(req.user._id).select("-password");
+    const user = await User.findById(req.userData.id).select("-password");
     if (user.cart.includes(product._id)) {
       return res.json({
+        success: true,
         message: "Item is already in cart",
       });
     }
@@ -147,7 +151,7 @@ exports.addToCart = async (req, res) => {
 exports.removeFromCart = async (req, res) => {
   try {
     const productId = req.params.id;
-    const userId = req.user._id;
+    const userId = req.userData.id;
     const user = await User.findById(userId);
     const productInCart = user.cart.includes(productId);
     if (!productInCart) {
@@ -176,7 +180,7 @@ exports.addToWishList = async (req, res) => {
         message: "Product not found",
       });
     }
-    const user = await User.findById(req.user._id).select("-password");
+    const user = await User.findById(req.userData.id).select("-password");
     if (user.wishList.includes(product._id)) {
       return res.json({
         message: "Item is already in Wish list",
@@ -199,7 +203,7 @@ exports.addToWishList = async (req, res) => {
 exports.removeFromWishList = async (req, res) => {
   try {
     const productId = req.params.id;
-    const userId = req.user._id;
+    const userId = req.userData.id;
     const user = await User.findById(userId);
     const productInWishlist = user.wishList.includes(productId);
     if (!productInWishlist) {

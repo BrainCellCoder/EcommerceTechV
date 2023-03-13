@@ -64,4 +64,11 @@ userSchema.plugin(uniqueValidator, {
   message: "{PATH} already exists. Try different email",
 });
 
+// JWT Token
+userSchema.methods.getJWTToken = function () {
+  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRE,
+  });
+};
+
 module.exports = mongoose.model("User", userSchema);
