@@ -6,14 +6,13 @@ const jwt = require("jsonwebtoken");
 exports.isLoggedIn = async (req, res, next) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
-    console.log("token", token);
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.userData = decoded;
-    console.log(req.userData);
-    console.log(decoded);
     next();
   } catch (error) {
-    return res.status(401).json({ success: false, message: "Auth failed" });
+    return res
+      .status(401)
+      .json({ success: false, message: "You are not logged in" });
   }
 };
 // isAdmin middleware

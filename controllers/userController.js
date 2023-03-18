@@ -1,6 +1,7 @@
 const User = require("./../models/userModel");
 const Product = require("./../models/productModel");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 exports.register = async (req, res) => {
   try {
@@ -86,9 +87,9 @@ exports.logout = (req, res) => {
 
 exports.profile = async (req, res) => {
   try {
-    const user = await User.findById(req.userData.id).select("-password");
-    console.log(user);
+    const user = await User.findById(req.userData.id).populate("cart");
     res.status(200).json({
+      success: true,
       message: "User details",
       user,
     });
@@ -124,6 +125,7 @@ exports.addToCart = async (req, res) => {
     const product = await Product.findById(id);
     if (!product) {
       return res.status(400).json({
+        success: true,
         message: "Product not found",
       });
     }
@@ -137,11 +139,13 @@ exports.addToCart = async (req, res) => {
     user.cart.push(product);
     await user.save();
     res.status(200).json({
+      success: true,
       message: "Product added to cart",
       user,
     });
   } catch (err) {
     res.status(400).json({
+      success: false,
       message: "Error",
       err,
     });
