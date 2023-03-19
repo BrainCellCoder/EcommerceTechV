@@ -87,7 +87,7 @@ exports.logout = (req, res) => {
 
 exports.profile = async (req, res) => {
   try {
-    const user = await User.findById(req.userData.id).populate("cart");
+    const user = await User.findById(req.userData.id).populate("cart wishList");
     res.status(200).json({
       success: true,
       message: "User details",
@@ -181,23 +181,27 @@ exports.addToWishList = async (req, res) => {
     const product = await Product.findById(id);
     if (!product) {
       return res.status(400).json({
+        success: true,
         message: "Product not found",
       });
     }
     const user = await User.findById(req.userData.id).select("-password");
     if (user.wishList.includes(product._id)) {
       return res.json({
+        success: true,
         message: "Item is already in Wish list",
       });
     }
     user.wishList.push(product);
     await user.save();
     res.status(200).json({
+      success: true,
       message: "Product added to Wish List",
       user,
     });
   } catch (err) {
     res.status(400).json({
+      success: false,
       message: "Error",
       err,
     });
