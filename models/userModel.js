@@ -49,12 +49,15 @@ const userSchema = new mongoose.Schema(
         ref: "Product",
       },
     ],
-    address: String,
-    country: String,
-    state: String,
-    city: String,
-    pinCode: Number,
-    phoneNo: Number,
+    address: [
+      {
+        country: String,
+        state: String,
+        city: String,
+        pinCode: Number,
+        phoneNo: Number,
+      },
+    ],
   },
 
   { timestamps: true }
