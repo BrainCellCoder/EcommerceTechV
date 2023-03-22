@@ -22,6 +22,10 @@ const userSchema = new mongoose.Schema(
       required: [true, "Please Enter your password"],
       minLength: [8, "Password should be greater than 8 characters"],
     },
+
+    address: {
+      type: String,
+    },
     avtaar: {
       public_id: {
         type: String,
@@ -47,15 +51,6 @@ const userSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Product",
-      },
-    ],
-    address: [
-      {
-        country: String,
-        state: String,
-        city: String,
-        pinCode: Number,
-        phoneNo: Number,
       },
     ],
   },
