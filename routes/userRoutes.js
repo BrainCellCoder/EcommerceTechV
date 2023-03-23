@@ -11,7 +11,8 @@ router.route("/logout").post(userController.logout);
 router
   .route("/me")
   .get(isLoggedIn, userController.profile)
-  .put(isLoggedIn, userController.update);
+  .put(isLoggedIn, userController.update)
+  .post(isLoggedIn, userController.addAddress);
 
 router
   .route("/cart/:id")

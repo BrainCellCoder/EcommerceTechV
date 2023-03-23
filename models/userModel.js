@@ -23,9 +23,16 @@ const userSchema = new mongoose.Schema(
       minLength: [8, "Password should be greater than 8 characters"],
     },
 
-    address: {
-      type: String,
-    },
+    shippingAddress: [
+      {
+        address: { type: String },
+        city: { type: String },
+        state: { type: String },
+        country: { type: String },
+        pinCode: { type: Number },
+        phoneNo: { type: Number },
+      },
+    ],
     avtaar: {
       public_id: {
         type: String,
