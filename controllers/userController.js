@@ -236,7 +236,6 @@ exports.addAddress = async (req, res) => {
     const user = await User.findById(req.userData.id).select("-password");
     user.shippingAddress.push(req.body);
     await user.save();
-    console.log(user);
     res.status(200).json({
       success: true,
       message: "Address Saved",
