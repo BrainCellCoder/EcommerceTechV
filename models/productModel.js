@@ -47,18 +47,8 @@ const productSchema = mongoose.Schema(
     },
     reviews: [
       {
-        name: {
-          type: String,
-          required: true,
-        },
-        rating: {
-          type: Number,
-          required: true,
-        },
-        comment: {
-          type: String,
-          required: true,
-        },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Review",
       },
     ],
     createdBy: {

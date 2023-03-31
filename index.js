@@ -4,6 +4,7 @@ const productRouter = require("./routes/productRoutes");
 const adminRouter = require("./routes/adminRoutes");
 const userRouter = require("./routes/userRoutes");
 const orderRouter = require("./routes/orderRoutes");
+const reviewRouter = require("./routes/reviewRoutes");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 
@@ -30,6 +31,7 @@ app.use("/products", productRouter);
 app.use("/admin", adminRouter);
 app.use("/user", userRouter);
 app.use("/", orderRouter);
+app.use("/review", reviewRouter);
 
 app.all("*", (req, res) => {
   res.status(404).json({
