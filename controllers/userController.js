@@ -1,6 +1,7 @@
 const User = require("./../models/userModel");
 const Product = require("./../models/productModel");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 exports.register = async (req, res) => {
   try {
@@ -22,12 +23,10 @@ exports.register = async (req, res) => {
         url: "profileURL",
       },
     });
-    const token = user.getJWTToken();
-    res.status(200).cookie("token", token).json({
+    res.status(200).json({
       success: true,
       message: "Registered Successfully and Loggged in!!",
       user,
-      token,
     });
   } catch (err) {
     res.status(400).json({
@@ -60,8 +59,8 @@ exports.login = async (req, res) => {
         res.status(200).cookie("token", token).json({
           success: true,
           message: "Logged in successfully",
-          user,
           token,
+          user,
         });
       } else {
         res.status(400).json({
@@ -80,8 +79,6 @@ exports.login = async (req, res) => {
 };
 
 exports.logout = (req, res) => {
-  res.cookie("token", null);
-
   res.status(200).json({
     success: true,
     message: "Logged Out",
@@ -90,8 +87,9 @@ exports.logout = (req, res) => {
 
 exports.profile = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select("-password");
+    const user = await User.findById(req.userData.id).populate("cart wishList");
     res.status(200).json({
+      success: true,
       message: "User details",
       user,
     });
@@ -105,7 +103,7 @@ exports.profile = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    const user = await User.findByIdAndUpdate(req.user._id, req.body, {
+    const user = await User.findByIdAndUpdate(req.userData.id, req.body, {
       new: true,
       runValidators: true,
       useFindAndModify: false,
@@ -127,23 +125,27 @@ exports.addToCart = async (req, res) => {
     const product = await Product.findById(id);
     if (!product) {
       return res.status(400).json({
+        success: true,
         message: "Product not found",
       });
     }
-    const user = await User.findById(req.user._id).select("-password");
+    const user = await User.findById(req.userData.id).select("-password");
     if (user.cart.includes(product._id)) {
       return res.json({
+        success: true,
         message: "Item is already in cart",
       });
     }
     user.cart.push(product);
     await user.save();
     res.status(200).json({
+      success: true,
       message: "Product added to cart",
       user,
     });
   } catch (err) {
     res.status(400).json({
+      success: false,
       message: "Error",
       err,
     });
@@ -153,7 +155,7 @@ exports.addToCart = async (req, res) => {
 exports.removeFromCart = async (req, res) => {
   try {
     const productId = req.params.id;
-    const userId = req.user._id;
+    const userId = req.userData.id;
     const user = await User.findById(userId);
     const productInCart = user.cart.includes(productId);
     if (!productInCart) {
@@ -179,23 +181,27 @@ exports.addToWishList = async (req, res) => {
     const product = await Product.findById(id);
     if (!product) {
       return res.status(400).json({
+        success: true,
         message: "Product not found",
       });
     }
-    const user = await User.findById(req.user._id).select("-password");
+    const user = await User.findById(req.userData.id).select("-password");
     if (user.wishList.includes(product._id)) {
       return res.json({
+        success: true,
         message: "Item is already in Wish list",
       });
     }
     user.wishList.push(product);
     await user.save();
     res.status(200).json({
+      success: true,
       message: "Product added to Wish List",
       user,
     });
   } catch (err) {
     res.status(400).json({
+      success: false,
       message: "Error",
       err,
     });
@@ -205,7 +211,7 @@ exports.addToWishList = async (req, res) => {
 exports.removeFromWishList = async (req, res) => {
   try {
     const productId = req.params.id;
-    const userId = req.user._id;
+    const userId = req.userData.id;
     const user = await User.findById(userId);
     const productInWishlist = user.wishList.includes(productId);
     if (!productInWishlist) {
@@ -219,6 +225,25 @@ exports.removeFromWishList = async (req, res) => {
     });
   } catch (err) {
     return res.status(400).json({
+      message: "Error",
+      err,
+    });
+  }
+};
+
+exports.addAddress = async (req, res) => {
+  try {
+    const user = await User.findById(req.userData.id).select("-password");
+    user.shippingAddress.push(req.body);
+    await user.save();
+    res.status(200).json({
+      success: true,
+      message: "Address Saved",
+      user,
+    });
+  } catch (err) {
+    res.status(400).json({
+      success: false,
       message: "Error",
       err,
     });

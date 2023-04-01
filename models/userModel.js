@@ -22,6 +22,17 @@ const userSchema = new mongoose.Schema(
       required: [true, "Please Enter your password"],
       minLength: [8, "Password should be greater than 8 characters"],
     },
+
+    shippingAddress: [
+      {
+        address: { type: String },
+        city: { type: String },
+        state: { type: String },
+        country: { type: String },
+        pinCode: { type: Number },
+        phoneNo: { type: Number },
+      },
+    ],
     avtaar: {
       public_id: {
         type: String,
@@ -49,12 +60,6 @@ const userSchema = new mongoose.Schema(
         ref: "Product",
       },
     ],
-    address: String,
-    country: String,
-    state: String,
-    city: String,
-    pinCode: Number,
-    phoneNo: Number,
   },
 
   { timestamps: true }

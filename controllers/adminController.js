@@ -43,7 +43,7 @@ exports.adminLogin = async (req, res) => {
 
 exports.createProduct = async (req, res) => {
   try {
-    req.body.createdBy = req.admin._id;
+    req.body.createdBy = req.userData.id;
     const product = await Product(req.body);
     const file = req.file;
     // product.images = files.map((f) => ({ url: f.path, filename: f.filename }));

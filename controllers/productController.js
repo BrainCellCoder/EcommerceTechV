@@ -22,7 +22,12 @@ exports.getAllProducts = async (req, res) => {
     // let skip = (page-1)*limit;
     // const products = await Product.find(queryObj).skip(skip).limit(limit);
 
-    const products = await Product.find(queryObj);
+    const products = await Product.find(queryObj).populate({
+      path: "reviews",
+      populate: {
+        path: "author",
+      },
+    });
     res.status(200).json({
       numberOfProduct: products.length,
       products: products.length === 0 ? "No product found" : products,

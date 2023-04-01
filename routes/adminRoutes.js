@@ -24,7 +24,7 @@ router.route("/users").get(isLoggedIn, isAdmin, adminController.allUsers);
 router
   .route("/user/:id")
   .get(isLoggedIn, isAdmin, adminController.singleUser)
-  .delete(adminController.deleteUser);
+  .delete(isLoggedIn, isAdmin, adminController.deleteUser);
 
 router.route("/login").post(adminController.adminLogin);
 module.exports = router;
