@@ -8,6 +8,7 @@ exports.addReview = async (req, res) => {
     const review = new Review(req.body);
     review.author = req.userData.id;
     product.reviews.push(review);
+    product.numOfReviews = product.reviews.length;
     await product.save();
     await review.save();
     return res.json({

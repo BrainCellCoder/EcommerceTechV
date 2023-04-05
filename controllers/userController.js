@@ -122,6 +122,7 @@ exports.update = async (req, res) => {
 exports.addToCart = async (req, res) => {
   try {
     const { id } = req.params;
+    const userId = req.userData.id;
     const product = await Product.findById(id);
     if (!product) {
       return res.status(400).json({
@@ -137,6 +138,9 @@ exports.addToCart = async (req, res) => {
       });
     }
     user.cart.push(product);
+    if (user.wishList.includes(id)) {
+      await User.findByIdAndUpdate(userId, { $pull: { wishList: id } });
+    }
     await user.save();
     res.status(200).json({
       success: true,

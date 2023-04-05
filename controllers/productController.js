@@ -43,7 +43,13 @@ exports.getAllProducts = async (req, res) => {
 exports.getSingleProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const product = await Product.findById(id);
+    const product = await Product.findById(id).populate({
+      path: "reviews",
+      populate: {
+        path: "author",
+        model: "User",
+      },
+    });
     if (product) {
       return res.status(200).json({
         message: "Product details found",
