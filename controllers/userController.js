@@ -87,7 +87,10 @@ exports.logout = (req, res) => {
 
 exports.profile = async (req, res) => {
   try {
-    const user = await User.findById(req.userData.id).populate("cart wishList");
+    const user = await User.findById(req.userData.id).populate(
+      "cart.productId wishList"
+    );
+    console.log(user);
     res.status(200).json({
       success: true,
       message: "User details",
@@ -131,14 +134,16 @@ exports.addToCart = async (req, res) => {
       });
     }
     const user = await User.findById(req.userData.id).populate("cart");
-    const itemExists = user.cart.find((item) => item._id.equals(product._id));
+    const itemExists = user.cart.find((item) =>
+      item.productId.equals(product._id)
+    );
     if (itemExists) {
       return res.json({
         success: true,
         message: "Item is already in cart",
       });
     }
-    user.cart.push(product);
+    user.cart.push(req.body);
     if (user.wishList.includes(id)) {
       await User.findByIdAndUpdate(userId, { $pull: { wishList: id } });
     }
@@ -163,13 +168,16 @@ exports.removeFromCart = async (req, res) => {
     const productId = req.params.id;
     const userId = req.userData.id;
     const user = await User.findById(userId);
-    const productInCart = user.cart.includes(productId);
-    if (!productInCart) {
+    // const productInCart = user.cart.includes(productId);
+    const itemExists = user.cart.find((item) =>
+      item.productId.equals(productId)
+    );
+    if (!itemExists) {
       return res.json({
         message: "This product is not in the cart",
       });
     }
-    await User.findByIdAndUpdate(userId, { $pull: { cart: productId } });
+    await User.findByIdAndUpdate(userId, { $pull: { cart: { productId } } });
     return res.json({
       message: "Successfully removed from cart",
     });
