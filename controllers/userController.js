@@ -130,8 +130,9 @@ exports.addToCart = async (req, res) => {
         message: "Product not found",
       });
     }
-    const user = await User.findById(req.userData.id).select("-password");
-    if (user.cart.includes(product._id)) {
+    const user = await User.findById(req.userData.id).populate("cart");
+    const itemExists = user.cart.find((item) => item._id.equals(product._id));
+    if (itemExists) {
       return res.json({
         success: true,
         message: "Item is already in cart",
@@ -141,6 +142,7 @@ exports.addToCart = async (req, res) => {
     if (user.wishList.includes(id)) {
       await User.findByIdAndUpdate(userId, { $pull: { wishList: id } });
     }
+    console.log(user);
     await user.save();
     res.status(200).json({
       success: true,
