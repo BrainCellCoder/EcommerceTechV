@@ -17,7 +17,8 @@ router
 router
   .route("/cart/:id")
   .post(isLoggedIn, userController.addToCart)
-  .delete(isLoggedIn, userController.removeFromCart);
+  .delete(isLoggedIn, userController.removeFromCart)
+  .patch(isLoggedIn, userController.updateCartQuantity);
 router
   .route("/wishlist/:id")
   .post(isLoggedIn, userController.addToWishList)

@@ -2,6 +2,7 @@ const User = require("./../models/userModel");
 const Product = require("./../models/productModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { findById } = require("../models/adminModel");
 
 exports.register = async (req, res) => {
   try {
@@ -90,7 +91,6 @@ exports.profile = async (req, res) => {
     const user = await User.findById(req.userData.id).populate(
       "cart.productId wishList"
     );
-    console.log(user);
     res.status(200).json({
       success: true,
       message: "User details",
@@ -133,7 +133,11 @@ exports.addToCart = async (req, res) => {
         message: "Product not found",
       });
     }
-    const user = await User.findById(req.userData.id).populate("cart");
+
+    const user = await User.findById(req.userData.id).populate(
+      "cart.productId wishList"
+    );
+    console.log("USERRRRRRr777777", user);
     const itemExists = user.cart.find((item) =>
       item.productId.equals(product._id)
     );
@@ -147,7 +151,13 @@ exports.addToCart = async (req, res) => {
     if (user.wishList.includes(id)) {
       await User.findByIdAndUpdate(userId, { $pull: { wishList: id } });
     }
-    console.log(user);
+    // let cartTotal = 0;
+    // user.cart.forEach((item) => {
+    //   console.log(item);
+    //   cartTotal += item.quantity * item.productId.price;
+    // });
+    // console.log(cartTotal);
+    // user.totalCartAmount = cartTotal;
     await user.save();
     res.status(200).json({
       success: true,
@@ -181,6 +191,37 @@ exports.removeFromCart = async (req, res) => {
     return res.json({
       message: "Successfully removed from cart",
     });
+  } catch (err) {
+    return res.status(400).json({
+      message: "Error",
+      err,
+    });
+  }
+};
+
+exports.updateCartQuantity = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { quantity } = req.body;
+    const user = await User.findById(req.userData.id).populate(
+      "cart.productId wishList"
+    );
+    const itemIndex = user.cart.findIndex(
+      (item) => item.productId._id.toString() === id
+    );
+    if (itemIndex !== -1) {
+      user.cart[itemIndex].quantity = quantity;
+      await user.save();
+      return res.status(200).json({
+        success: true,
+        message: "Product quantity updated",
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: "Product not found in the cart",
+      });
+    }
   } catch (err) {
     return res.status(400).json({
       message: "Error",
