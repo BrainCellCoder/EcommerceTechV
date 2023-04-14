@@ -151,13 +151,6 @@ exports.addToCart = async (req, res) => {
     if (user.wishList.includes(id)) {
       await User.findByIdAndUpdate(userId, { $pull: { wishList: id } });
     }
-    // let cartTotal = 0;
-    // user.cart.forEach((item) => {
-    //   console.log(item);
-    //   cartTotal += item.quantity * item.productId.price;
-    // });
-    // console.log(cartTotal);
-    // user.totalCartAmount = cartTotal;
     await user.save();
     res.status(200).json({
       success: true,
@@ -189,6 +182,7 @@ exports.removeFromCart = async (req, res) => {
     }
     await User.findByIdAndUpdate(userId, { $pull: { cart: { productId } } });
     return res.json({
+      success: true,
       message: "Successfully removed from cart",
     });
   } catch (err) {
@@ -276,6 +270,7 @@ exports.removeFromWishList = async (req, res) => {
     }
     await User.findByIdAndUpdate(userId, { $pull: { wishList: productId } });
     return res.json({
+      success: true,
       message: "Successfully removed from Wish List",
     });
   } catch (err) {
