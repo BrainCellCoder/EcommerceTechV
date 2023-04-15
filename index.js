@@ -5,6 +5,7 @@ const adminRouter = require("./routes/adminRoutes");
 const userRouter = require("./routes/userRoutes");
 const orderRouter = require("./routes/orderRoutes");
 const reviewRouter = require("./routes/reviewRoutes");
+const paymentRouter = require("./routes/paymentRoutes");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 
@@ -32,6 +33,13 @@ app.use("/admin", adminRouter);
 app.use("/user", userRouter);
 app.use("/", orderRouter);
 app.use("/review", reviewRouter);
+app.use("/payment", paymentRouter);
+
+app.get("/getkey", (req, res) => {
+  res.status(200).json({
+    key: "rzp_test_R1NoaBRCt5uthu",
+  });
+});
 
 app.all("*", (req, res) => {
   res.status(404).json({
