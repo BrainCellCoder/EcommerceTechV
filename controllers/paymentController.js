@@ -1,6 +1,8 @@
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
 const Payment = require("../models/paymentModel");
+const Order = require("../models/orderSchema");
+const User = require("../models/userModel");
 
 const instance = new Razorpay({
   key_id: "rzp_test_R1NoaBRCt5uthu",
@@ -8,11 +10,16 @@ const instance = new Razorpay({
 });
 
 exports.checkout = async (req, res) => {
+  const { amount, quantity, productId, user } = req.body;
   const options = {
-    amount: Number(req.body.amount * 100), // amount in the smallest currency unit
+    amount: Number(amount * 100 * quantity), // amount in the smallest currency unit
     currency: "INR",
   };
   const order = await instance.orders.create(options);
+  const orderDB = await Order.create({
+    orderItems: { quantity: quantity, productId: productId },
+    user,
+  });
   res.status(200).json({
     success: true,
     order,
@@ -20,10 +27,8 @@ exports.checkout = async (req, res) => {
 };
 
 exports.paymentVerification = async (req, res) => {
-  console.log(req.body);
   const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
     req.body;
-
   const body = razorpay_order_id + "|" + razorpay_payment_id;
 
   const expectedSignature = crypto
@@ -39,7 +44,6 @@ exports.paymentVerification = async (req, res) => {
       razorpay_payment_id,
       razorpay_signature,
     });
-
     res.redirect(
       `http://localhost:3000/paymentsuccess?reference=${razorpay_payment_id}`
     );

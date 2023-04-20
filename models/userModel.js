@@ -19,10 +19,12 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, "Please Enter your password"],
+      // required: [true, "Please Enter your password"],
       minLength: [8, "Password should be greater than 8 characters"],
     },
-
+    google_ID: {
+      type: String,
+    },
     shippingAddress: [
       {
         address: { type: String },
@@ -36,11 +38,11 @@ const userSchema = new mongoose.Schema(
     avtaar: {
       public_id: {
         type: String,
-        required: true,
+        // required: true,
       },
       url: {
         type: String,
-        required: true,
+        // required: true,
       },
     },
     role: {

@@ -8,10 +8,25 @@ const reviewRouter = require("./routes/reviewRoutes");
 const paymentRouter = require("./routes/paymentRoutes");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const passport = require("passport");
+const passportSetup = require("./passport");
+const authRoutes = require("./routes/authRoutes");
+const cookieSession = require("cookie-session");
 
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+app.use(
+  cookieSession({
+    name: "session",
+    keys: ["abhi"],
+    maxAge: 24 * 60 * 60 * 100,
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 //middleware to advoid CORS error
 app.use((req, res, next) => {
@@ -28,6 +43,7 @@ app.use((req, res, next) => {
 });
 
 //Routes------------------------------------------------------------------------
+app.use("/auth", authRoutes);
 app.use("/products", productRouter);
 app.use("/admin", adminRouter);
 app.use("/user", userRouter);
