@@ -14,9 +14,9 @@ passport.use(
     (accessToken, refreshToken, profile, done) => {
       User.findOne({ google_ID: profile.id }).then((currentUser) => {
         if (currentUser) {
-          const user = { id: currentUser.id }; // create a user object for JWT token
-          const secretKey = process.env.JWT_SECRET; // set your own secret key
-          const token = jwt.sign(user, secretKey); // generate JWT token
+          const user = { id: currentUser.id };
+          const secretKey = process.env.JWT_SECRET;
+          const token = jwt.sign(user, secretKey);
           done(null, [token, currentUser.id]);
           //   done(null, currentUser);
         } else {
@@ -28,11 +28,10 @@ passport.use(
             .save()
             .then((newUser) => {
               console.log("new user created: ", newUser);
-              const user = { id: newUser.id }; // create a user object for JWT token
-              const secretKey = process.env.JWT_SECRET; // set your own secret key
-              const token = jwt.sign(user, secretKey); // generate JWT token
-              console.log(token);
-              done(null, token);
+              const user = { id: newUser.id };
+              const secretKey = process.env.JWT_SECRET;
+              const token = jwt.sign(user, secretKey);
+              done(null, [token, newUser.id]);
               //   done(null, newUser);
             });
         }
