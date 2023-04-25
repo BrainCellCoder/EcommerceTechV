@@ -9,7 +9,7 @@ const orderSchema = new mongoose.Schema({
   //   pinCode: { type: Number, required: true },
   //   phoneNo: { type: Number, required: true },
   // },
-  orderItems: [
+  products: [
     {
       productId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -32,6 +32,9 @@ const orderSchema = new mongoose.Schema({
     type: String,
     unique: true,
   },
+  email: {
+    type: String,
+  },
   success: {
     type: Boolean,
     default: false,
@@ -43,11 +46,11 @@ const orderSchema = new mongoose.Schema({
   },
   address: {
     type: String,
-    required: true,
+    // required: true,
   },
   phone: {
     type: String,
-    required: true,
+    // required: true,
   },
   createdAt: { type: Date, default: Date.now() },
 });

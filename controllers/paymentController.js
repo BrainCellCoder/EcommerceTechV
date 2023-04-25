@@ -10,35 +10,38 @@ const instance = new Razorpay({
 });
 
 exports.checkout = async (req, res) => {
-  if (req.body.amount && req.body.quantity && req.productId && req.body.user) {
-    const { amount, quantity, productId, user } = req.body;
-    const options = {
-      amount: Number(amount * 100 * quantity), // amount in the smallest currency unit
+  try {
+    console.log(req.body);
+    const { amount, cart, buyer, email, address, phone } = req.body;
+    const option = {
+      amount: Number(amount * 100),
       currency: "INR",
     };
-    const order = await instance.orders.create(options);
-    // const orderDB = await Order.create({
-    //   orderItems: { quantity: quantity, productId: productId },
-    //   user,
-    // });
+    const order = await instance.orders.create(option);
+    console.log(order);
+    const products = cart.map((c) => {
+      return { productId: c.productId, quantity: c.quantity };
+    });
+    console.log(products);
+    await Order.deleteMany({});
+    const newOrder = await Order.create({
+      products,
+      buyer,
+      amount: amount,
+      razorpay_order_id: order.id,
+      email,
+      address,
+      phone,
+    });
     res.status(200).json({
       success: true,
       order,
     });
-  } else {
-    const { amount } = req.body;
-    const options = {
-      amount: Number(amount * 100), // amount in the smallest currency unit
-      currency: "INR",
-    };
-    const order = await instance.orders.create(options);
-    // const orderDB = await Order.create({
-    //   orderItems: { quantity: quantity, productId: productId },
-    //   //   user,
-    // });
-    res.status(200).json({
-      success: true,
-      order,
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+      message: "Error",
+      err,
     });
   }
 };
@@ -56,19 +59,25 @@ exports.paymentVerification = async (req, res) => {
   const isAuthentic = expectedSignature === razorpay_signature;
   if (isAuthentic) {
     // DAtabase
+    await Payment.deleteMany({});
     await Payment.create({
       razorpay_order_id,
       razorpay_payment_id,
       razorpay_signature,
     });
-    // res.redirect(
-    //   `http://localhost:3000/paymentsuccess?reference=${razorpay_payment_id}`
-    // );
-    res.status(200).json({
-      success: true,
-      razorpay_payment_id,
-      message: "Payment Successfull",
-    });
+    const updateOrder = await Order.findOneAndUpdate(
+      { razorpay_order_id },
+      { success: true },
+      { new: true }
+    );
+    res.redirect(
+      `http://localhost:3000/paymentsuccess?reference=${razorpay_payment_id}`
+    );
+    // res.status(200).json({
+    //   success: true,
+    //   razorpay_payment_id,
+    //   message: "Payment Successfull",
+    // });
   } else {
     res.status(400).json({
       success: false,
