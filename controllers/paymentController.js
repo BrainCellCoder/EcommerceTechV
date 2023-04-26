@@ -17,11 +17,9 @@ exports.checkout = async (req, res) => {
       currency: "INR",
     };
     const order = await instance.orders.create(option);
-    console.log(order);
     const products = cart.map((c) => {
       return { productId: c.productId, quantity: c.quantity };
     });
-    await Order.deleteMany({});
     const newOrder = await Order.create({
       products,
       buyer,
@@ -56,7 +54,6 @@ exports.paymentVerification = async (req, res) => {
 
   const isAuthentic = expectedSignature === razorpay_signature;
   if (isAuthentic) {
-    await Payment.deleteMany({});
     await Payment.create({
       razorpay_order_id,
       razorpay_payment_id,
