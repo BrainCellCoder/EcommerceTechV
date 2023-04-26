@@ -11,7 +11,6 @@ const instance = new Razorpay({
 
 exports.checkout = async (req, res) => {
   try {
-    console.log(req.body);
     const { amount, cart, buyer, email, address, phone } = req.body;
     const option = {
       amount: Number(amount * 100),
@@ -22,7 +21,6 @@ exports.checkout = async (req, res) => {
     const products = cart.map((c) => {
       return { productId: c.productId, quantity: c.quantity };
     });
-    console.log(products);
     await Order.deleteMany({});
     const newOrder = await Order.create({
       products,
@@ -58,7 +56,6 @@ exports.paymentVerification = async (req, res) => {
 
   const isAuthentic = expectedSignature === razorpay_signature;
   if (isAuthentic) {
-    // DAtabase
     await Payment.deleteMany({});
     await Payment.create({
       razorpay_order_id,
@@ -73,11 +70,6 @@ exports.paymentVerification = async (req, res) => {
     res.redirect(
       `http://localhost:3000/paymentsuccess?reference=${razorpay_payment_id}`
     );
-    // res.status(200).json({
-    //   success: true,
-    //   razorpay_payment_id,
-    //   message: "Payment Successfull",
-    // });
   } else {
     res.status(400).json({
       success: false,
