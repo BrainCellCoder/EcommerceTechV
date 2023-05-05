@@ -14,6 +14,8 @@ router
   .put(isLoggedIn, userController.update)
   .post(isLoggedIn, userController.addAddress);
 
+router.route("/me/delete-address/:id").put(userController.deleteAddress);
+
 router
   .route("/cart/:id")
   .post(isLoggedIn, userController.addToCart)

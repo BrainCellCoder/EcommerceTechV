@@ -1,14 +1,13 @@
-const { bool, boolean } = require("joi");
 const mongoose = require("mongoose");
 const orderSchema = new mongoose.Schema({
-  // shippingInfo: {
-  //   address: { type: String, required: true },
-  //   city: { type: String, required: true },
-  //   state: { type: String, required: true },
-  //   country: { type: String, required: true },
-  //   pinCode: { type: Number, required: true },
-  //   phoneNo: { type: Number, required: true },
-  // },
+  shippingInfo: {
+    address: { type: String, required: true },
+    city: { type: String, required: true },
+    state: { type: String, required: true },
+    country: { type: String, required: true },
+    pinCode: { type: Number, required: true },
+    phoneNo: { type: Number, required: true },
+  },
   products: [
     {
       productId: {
@@ -44,10 +43,10 @@ const orderSchema = new mongoose.Schema({
     default: "Not processed",
     enum: ["Not processed", "Processing", "Shipped", "Delivered", "Cancelled"],
   },
-  address: {
-    type: String,
-    // required: true,
-  },
+  // address: {
+  //   type: String,
+  //   // required: true,
+  // },
   phone: {
     type: String,
     // required: true,

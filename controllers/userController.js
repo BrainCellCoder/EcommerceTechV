@@ -1,5 +1,5 @@
-const User = require("./../models/userModel");
 const Product = require("./../models/productModel");
+const User = require("./../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { findById } = require("../models/adminModel");
@@ -118,6 +118,27 @@ exports.update = async (req, res) => {
   } catch (error) {
     res.status(400).json({
       message: "Updation failed",
+    });
+  }
+};
+
+exports.deleteAddress = async (req, res) => {
+  try {
+    const addressId = req.body.addressId;
+    console.log(addressId);
+    const userId = req.body.userId;
+    console.log(userId);
+    await User.findByIdAndUpdate(userId, {
+      $pull: { shippingAddress: { _id: addressId } },
+    });
+    res.status(200).json({
+      success: true,
+      message: "Address deleted successfully",
+    });
+  } catch (err) {
+    res.status(400).json({
+      err,
+      message: "Deletion failed",
     });
   }
 };
