@@ -23,6 +23,10 @@ const orderSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
+  deliveryDate: {
+    type: Date,
+    required: true,
+  },
   amount: {
     type: Number,
     require: true,
