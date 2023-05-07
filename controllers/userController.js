@@ -2,7 +2,7 @@ const Product = require("./../models/productModel");
 const User = require("./../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { findById } = require("../models/adminModel");
+const Order = require("./../models/orderSchema");
 
 exports.register = async (req, res) => {
   try {
@@ -294,6 +294,34 @@ exports.removeFromWishList = async (req, res) => {
     });
   } catch (err) {
     return res.status(400).json({
+      message: "Error",
+      err,
+    });
+  }
+};
+
+exports.myorders = async (req, res) => {
+  try {
+    const buyerId = req.body.id;
+    console.log(req.body);
+    console.log(buyerId);
+    const orders = await Order.find({
+      buyer: buyerId,
+    });
+    console.log(orders);
+    if (!orders) {
+      return res.status(400).json({
+        success: false,
+        message: "No orders found",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Orders found",
+      orders,
+    });
+  } catch (err) {
+    res.status(400).json({
       message: "Error",
       err,
     });

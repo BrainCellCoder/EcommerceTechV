@@ -15,6 +15,7 @@ router
   .post(isLoggedIn, userController.addAddress);
 
 router.route("/me/delete-address/:id").put(userController.deleteAddress);
+router.route("/me/myorders").post(userController.myorders);
 
 router
   .route("/cart/:id")
