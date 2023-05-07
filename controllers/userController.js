@@ -125,9 +125,7 @@ exports.update = async (req, res) => {
 exports.deleteAddress = async (req, res) => {
   try {
     const addressId = req.body.addressId;
-    console.log(addressId);
     const userId = req.body.userId;
-    console.log(userId);
     await User.findByIdAndUpdate(userId, {
       $pull: { shippingAddress: { _id: addressId } },
     });
