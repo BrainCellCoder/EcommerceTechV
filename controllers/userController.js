@@ -307,7 +307,7 @@ exports.myorders = async (req, res) => {
     console.log(buyerId);
     const orders = await Order.find({
       buyer: buyerId,
-    });
+    }).populate("products.productId");
     console.log(orders);
     if (!orders) {
       return res.status(400).json({
