@@ -20,11 +20,14 @@ router
   .put(isLoggedIn, isAdmin, adminController.updateProduct)
   .delete(isLoggedIn, isAdmin, adminController.deleteProduct);
 
-router.route("/users").get(isLoggedIn, isAdmin, adminController.allUsers);
+// router.route("/users").get(isLoggedIn, isAdmin, adminController.allUsers);
+router.route("/users").get(adminController.allUsers);
 router
   .route("/user/:id")
   .get(isLoggedIn, isAdmin, adminController.singleUser)
   .delete(isLoggedIn, isAdmin, adminController.deleteUser);
 
 router.route("/login").post(adminController.adminLogin);
+
+router.route("/allorders").get(adminController.getAllOrders);
 module.exports = router;

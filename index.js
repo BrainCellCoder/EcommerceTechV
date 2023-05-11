@@ -3,7 +3,6 @@ const app = express();
 const productRouter = require("./routes/productRoutes");
 const adminRouter = require("./routes/adminRoutes");
 const userRouter = require("./routes/userRoutes");
-const orderRouter = require("./routes/orderRoutes");
 const reviewRouter = require("./routes/reviewRoutes");
 const paymentRouter = require("./routes/paymentRoutes");
 const bodyParser = require("body-parser");
@@ -47,7 +46,6 @@ app.use("/auth", authRoutes);
 app.use("/products", productRouter);
 app.use("/admin", adminRouter);
 app.use("/user", userRouter);
-app.use("/", orderRouter);
 app.use("/review", reviewRouter);
 app.use("/payment", paymentRouter);
 

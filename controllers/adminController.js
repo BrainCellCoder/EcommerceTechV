@@ -1,6 +1,7 @@
 const Product = require("./../models/productModel");
 const Admin = require("./../models/adminModel");
 const User = require("./../models/userModel");
+const Order = require("./../models/orderSchema");
 
 const { cloudinary } = require("./../cloudinary");
 
@@ -166,4 +167,14 @@ exports.deleteUser = async (req, res) => {
       });
     }
   }
+};
+
+exports.getAllOrders = async (req, res) => {
+  const orders = await Order.find({});
+  console.log(orders);
+  res.status(200).json({
+    success: true,
+    message: "Orders Found",
+    orders,
+  });
 };
