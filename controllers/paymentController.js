@@ -20,6 +20,7 @@ exports.checkout = async (req, res) => {
     const products = cart.map((c) => {
       return { productId: c.productId, quantity: c.quantity };
     });
+    await Order.deleteMany({});
     const newOrder = await Order.create({
       products,
       buyer,

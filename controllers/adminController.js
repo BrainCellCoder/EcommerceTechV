@@ -170,11 +170,28 @@ exports.deleteUser = async (req, res) => {
 };
 
 exports.getAllOrders = async (req, res) => {
-  const orders = await Order.find({});
+  const orders = await Order.find({}).populate("buyer products.productId");
   console.log(orders);
   res.status(200).json({
     success: true,
     message: "Orders Found",
     orders,
   });
+};
+
+exports.updateOrderStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+    const { orderId } = req.params;
+    await Order.findByIdAndUpdate({ _id: orderId }, { status: status });
+    res.status(200).json({
+      success: true,
+    });
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+      message: "Something went wrong",
+      err,
+    });
+  }
 };

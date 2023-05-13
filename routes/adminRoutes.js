@@ -30,4 +30,5 @@ router
 router.route("/login").post(adminController.adminLogin);
 
 router.route("/allorders").get(adminController.getAllOrders);
+router.route("/orderstatus/:orderId").post(adminController.updateOrderStatus);
 module.exports = router;
