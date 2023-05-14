@@ -31,6 +31,7 @@ const productSchema = mongoose.Schema(
         },
       },
     ],
+
     category: {
       type: String,
       required: [true, "Please enter product category"],
@@ -51,11 +52,11 @@ const productSchema = mongoose.Schema(
         ref: "Review",
       },
     ],
-    createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
+    // createdBy: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "User",
+    //   required: true,
+    // },
   },
   { timestamps: true }
 );
