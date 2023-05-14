@@ -43,37 +43,8 @@ exports.adminLogin = async (req, res) => {
 };
 
 exports.createProduct = async (req, res) => {
-  // try {
-  //   req.body.createdBy = req.userData.id;
-  //   const product = await Product(req.body);
-  //   const file = req.file;
-  //   // product.images = files.map((f) => ({ url: f.path, filename: f.filename }));
-  //   product.image = { url: file.path, filename: file.filename };
-  //   await product.save();
-  //   if (product) {
-  //     return res.status(200).json({
-  //       message: "Product created",
-  //       product,
-  //     });
-  //   } else {
-  //     return res.status(400).json({
-  //       message: "Faild to create a product",
-  //     });
-  //   }
-  // } catch (err) {
-  //   res.status(400).json({
-  //     error: err.message,
-  //   });
-  // }
   try {
-    // Access form data
-    const { category, name, description, price } = req.body;
-
-    // Access uploaded file
-    console.log("******************************");
     const file = req.file;
-    console.log(req.body, req.file);
-
     const product = await Product(req.body);
     product.image = {
       url: file.path,
