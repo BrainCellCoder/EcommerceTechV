@@ -29,6 +29,7 @@ exports.checkout = async (req, res) => {
       shippingInfo,
       deliveryDate,
     });
+    await User.findByIdAndUpdate(buyer, { $set: { cart: [] } });
     res.status(200).json({
       success: true,
       order,
