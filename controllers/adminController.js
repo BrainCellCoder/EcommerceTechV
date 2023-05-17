@@ -62,7 +62,6 @@ exports.createProduct = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log("Upload to Cloudinary failed:", error);
     res.status(500).send("Upload failed");
   }
 };
@@ -171,7 +170,6 @@ exports.deleteUser = async (req, res) => {
 
 exports.getAllOrders = async (req, res) => {
   const orders = await Order.find({}).populate("buyer products.productId");
-  console.log(orders);
   res.status(200).json({
     success: true,
     message: "Orders Found",

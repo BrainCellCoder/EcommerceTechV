@@ -11,11 +11,17 @@ const passport = require("passport");
 const passportSetup = require("./passport");
 const authRoutes = require("./routes/authRoutes");
 const cookieSession = require("cookie-session");
+const cors = require("cors");
+const fileUpload = require("express-fileupload");
+
+app.use(cors());
 
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
+// app.use(fileUpload());
+// app.use(express.json({ limit: "10mb" }));
+// app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use(
   cookieSession({
     name: "session",

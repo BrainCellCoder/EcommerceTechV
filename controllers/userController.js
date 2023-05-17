@@ -159,7 +159,6 @@ exports.addToCart = async (req, res) => {
     const user = await User.findById(req.userData.id).populate(
       "cart.productId wishList"
     );
-    console.log("USERRRRRRr777777", user);
     const itemExists = user.cart.find((item) =>
       item.productId.equals(product._id)
     );
@@ -306,12 +305,9 @@ exports.removeFromWishList = async (req, res) => {
 exports.myorders = async (req, res) => {
   try {
     const buyerId = req.body.id;
-    console.log(req.body);
-    console.log(buyerId);
     const orders = await Order.find({
       buyer: buyerId,
     }).populate("products.productId");
-    console.log(orders);
     if (!orders) {
       return res.status(400).json({
         success: false,
