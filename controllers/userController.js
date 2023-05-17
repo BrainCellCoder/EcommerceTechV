@@ -6,11 +6,17 @@ const Order = require("./../models/orderSchema");
 
 exports.register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-    if (!name || !email || !password) {
+    const { name, email, password, cPassword } = req.body;
+    if (!name || !email || !password || !cPassword) {
       return res.status(400).json({
         success: false,
         message: "Please provide all the credentials",
+      });
+    }
+    if (password !== cPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Password Mismatched",
       });
     }
     const saltRounds = Number(process.env.SALT_ROUNDS);
