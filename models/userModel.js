@@ -22,6 +22,15 @@ const userSchema = new mongoose.Schema(
       // required: [true, "Please Enter your password"],
       minLength: [8, "Password should be greater than 8 characters"],
     },
+    firstName: {
+      type: String,
+    },
+    lastName: {
+      type: String,
+    },
+    phoneNo: {
+      type: Number,
+    },
     google_ID: {
       type: String,
     },
