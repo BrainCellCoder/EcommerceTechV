@@ -97,9 +97,16 @@ exports.logout = (req, res) => {
 
 exports.profile = async (req, res) => {
   try {
-    const user = await User.findById(req.userData.id).populate(
+    const { id } = req.userData;
+    const user = await User.findById({ _id: id }).populate(
       "cart.productId wishList"
     );
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "User details not found",
+      });
+    }
     res.status(200).json({
       success: true,
       message: "User details",
