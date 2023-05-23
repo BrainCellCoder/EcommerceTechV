@@ -40,6 +40,31 @@ exports.getAllProducts = async (req, res) => {
   }
 };
 
+exports.searchProduct = async (req, res) => {
+  try {
+    console.log("searxh");
+    const { text } = req.query;
+    console.log(text);
+    const product = await Product.find({
+      $or: [
+        { name: { $regex: new RegExp(text, "i") } },
+        // { description: { $regex: new RegExp(text, "i") } },
+        { category: { $regex: new RegExp(text, "i") } },
+      ],
+    });
+    console.log(product);
+    res.status(200).json({
+      totalProducts: product.length,
+      products: product,
+    });
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+      error: err,
+    });
+  }
+};
+
 exports.getSingleProduct = async (req, res) => {
   try {
     const { id } = req.params;
