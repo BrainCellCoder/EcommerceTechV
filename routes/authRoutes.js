@@ -37,7 +37,7 @@ router.get(
   "/google/callback",
   passport.authenticate("google", {
     successRedirect: "http://localhost:8000/auth/login/success",
-    failureRedirect: "login/faliure",
+    failureRedirect: "http://localhost:8000/auth/login/faliure",
   })
 );
 // router.get(
