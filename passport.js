@@ -4,6 +4,19 @@ const jwt = require("jsonwebtoken");
 
 require("dotenv").config({ path: "./.env" });
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
+
+passport.serializeUser((user, done) => {
+  done(null, user);
+  //   Here in mongodb save user in userModel
+  // const user={
+  // username:profile.displayName,
+  // avataar: profile.photos[0]
+  // }
+});
+
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
 passport.use(
   new GoogleStrategy(
     {
@@ -12,7 +25,7 @@ passport.use(
       callbackURL: "/auth/google/callback",
       passReqToCallback: true,
     },
-    (accessToken, refreshToken, profile, done) => {
+    (req, accessToken, refreshToken, profile, done) => {
       User.findOne({ google_ID: profile.id }).then((currentUser) => {
         if (currentUser) {
           const user = { id: currentUser.id };
@@ -40,16 +53,3 @@ passport.use(
     }
   )
 );
-
-passport.serializeUser((user, done) => {
-  done(null, user);
-  //   Here in mongodb save user in userModel
-  // const user={
-  // username:profile.displayName,
-  // avataar: profile.photos[0]
-  // }
-});
-
-passport.deserializeUser((user, done) => {
-  done(null, user);
-});
