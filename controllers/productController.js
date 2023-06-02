@@ -47,8 +47,8 @@ exports.searchProduct = async (req, res) => {
       $or: [
         { name: { $regex: new RegExp(text, "i") } },
         // { description: { $regex: new RegExp(text, "i") } },
-        // { category: { $regex: new RegExp(text, "i") } },
-        { category: { $regex: text } },
+        { category: { $regex: new RegExp(text, "i") } },
+        // { category: { $regex: text } },
       ],
     });
     res.status(200).json({
