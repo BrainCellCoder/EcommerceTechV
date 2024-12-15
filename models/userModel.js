@@ -100,8 +100,8 @@ userSchema.plugin(uniqueValidator, {
 
 // JWT Token
 userSchema.methods.getJWTToken = function () {
-  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRE,
+  return jwt.sign({ id: this._id }, process.env.JWT_SECRET || "jwtsecret", {
+    expiresIn: process.env.JWT_EXPIRE || "10h",
   });
 };
 

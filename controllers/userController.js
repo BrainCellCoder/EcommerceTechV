@@ -19,7 +19,7 @@ exports.register = async (req, res) => {
         message: "Password Mismatched",
       });
     }
-    const saltRounds = Number(process.env.SALT_ROUNDS);
+    const saltRounds = Number(process.env.SALT_ROUNDS || 10);
     const hashPassword = bcrypt.hashSync(password, saltRounds);
     const user = await User.create({
       name,
@@ -54,6 +54,7 @@ exports.login = async (req, res) => {
       });
     }
     const user = await User.findOne({ email });
+    console.log(user);
     if (!user) {
       return res.status(400).json({
         success: false,
@@ -77,6 +78,7 @@ exports.login = async (req, res) => {
       }
     }
   } catch (err) {
+    console.log(err);
     res.status(400).json({
       success: false,
       message: "Error!!",

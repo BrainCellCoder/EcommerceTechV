@@ -9,7 +9,8 @@ const Razorpay = require("razorpay");
 //   key_secret: "FiRugZQV0KQyGwtnZPfssqFf",
 // });
 
-const DB = process.env.DB_URL;
+const DB =
+  "mongodb+srv://techv-ecom:qwert1234@cluster0.h2kbo.mongodb.net/mernEcommerce";
 mongoose
   .connect(DB, {
     useNewUrlParser: true,
@@ -22,7 +23,7 @@ mongoose
     console.log(e);
   });
 
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 8001;
 app.listen(port, () => {
   console.log(`Listening on port ${port}...`);
 });

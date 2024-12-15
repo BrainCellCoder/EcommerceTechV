@@ -31,8 +31,8 @@ adminSchema.plugin(uniqueValidator, {
 
 // JWT Token
 adminSchema.methods.getJWTToken = function () {
-  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRE,
+  return jwt.sign({ id: this._id }, process.env.JWT_SECRET || "jetsecret", {
+    expiresIn: process.env.JWT_EXPIRE || "10h",
   });
 };
 
